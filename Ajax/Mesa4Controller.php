@@ -20,6 +20,7 @@
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../../dbconexion/db.php';
 require_once __DIR__ . '/../Php/sp_listo_tabla_2.php';
+require_once __DIR__ . '/../Php/sp_busco_fecha_serv.php';
 
 class Mesa4Controller extends BaseController
 {
@@ -43,13 +44,21 @@ class Mesa4Controller extends BaseController
         ['Ent_Descrient',    'Entidad'],
     ];
 
-    /** Datos iniciales (operadores + fechas por defecto). */
+    /** Datos iniciales (operadores + fecha del servidor para los filtros). */
     public function index(): void
     {
-        $this->json([
-            'ok'         => true,
-            'operadores' => [],   // sp_busco_usuarios 'MESAINGRESOS'
-        ]);
+        try {
+            $db    = new dbsqlserver();
+            $fecha = sp_busco_fecha_serv($db, 'DD');   // fecha del servidor (Y-m-d)
+            $db->close();
+            $this->json([
+                'ok'         => true,
+                'fecha'      => $fecha,
+                'operadores' => [],   // sp_busco_usuarios 'MESAINGRESOS'
+            ]);
+        } catch (Throwable $e) {
+            $this->json(['ok' => false, 'msg' => $e->getMessage()], 500);
+        }
     }
 
     /** VFP: sp_busco_usuarios 'MESAINGRESOS' (alimenta cboUno). */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * sp_depuro_socios.php
  *
@@ -76,6 +77,11 @@ function sp_depuro_socios($db = null, int $retraso = 2): array
         // (atendidos, idmotivo=57); mwksinatender2 descarta los motivos 27 ya
         // contemplados y, si quedan registros, mfecproc pasa a ser la llegada
         // mas antigua de ese conjunto (Ttod del primer horallegada ordenado).
+        // NOTA: el parametro dentro del IN (subconsulta) va como literal y no como
+        // marcador '?'. El driver "Microsoft ODBC SQL Server Driver" (legacy) no
+        // soporta marcadores de parametro dentro de subconsultas IN y falla el
+        // odbc_prepare ("Error de sintaxis o infraccion de acceso"). $fCorte es
+        // una fecha 'Y-m-d' generada por el servidor, por lo que es segura inlinear.
         $sqlMin = "SELECT MIN(s.horallegada) AS minll
                      FROM sqluser.socio s
                     WHERE CAST(s.horallegada AS date) < ?
@@ -89,15 +95,30 @@ function sp_depuro_socios($db = null, int $retraso = 2): array
                                       FROM sqluser.socio t
                                      WHERE t.Atendido = 1
                                        AND t.idmotivo = 57
-                                       AND CAST(t.horallegada AS date) < ?))
+                                       AND CAST(t.horallegada AS date) < '{$fCorte}'))
                             OR (s.idmotivo = 27 AND s.horallegada < ?)
                           )";
+
+
+        // -----------------------------------grabamos log, solo prueba
+        $flog = fopen("depurasocio.log", "a");
+        fwrite($flog, "--------------------\n");
+        fwrite($flog, "Fecha: " . date("Y-m-d H:i:s") . "\n" . PHP_EOL);
+        fwrite($flog, "Fecha de corte: $fCorte\n" . PHP_EOL);
+        fwrite($flog, "Fecha de ingreso: $fIngre\n" . PHP_EOL);
+        fwrite($flog, "sql: " . $sqlMin . "\n" . PHP_EOL);
+        fclose($flog);
+        // -----------------------------------grabamos log, solo prueba
+
         $stmt = $db->prepare($sqlMin);
         if (!$stmt) {
             throw new RuntimeException('Error al consultar la tabla Socios - 1');
         }
-        sp_depuro_check($db->execute($stmt, [$fCorte, $fCorte, $fIngre]),
-            'Error al consultar la tabla Socios - 1');
+        sp_depuro_check(
+            // Solo quedan 2 marcadores: el del IN (subconsulta) se inlineo arriba.
+            $db->execute($stmt, [$fCorte, $fIngre]),
+            'Error al consultar la tabla Socios - 1'
+        );
 
         $rowMin = $db->fetch_assoc($stmt);
         $minll  = ($rowMin && !empty($rowMin['minll'])) ? $rowMin['minll'] : '';
@@ -175,8 +196,10 @@ function sp_depuro_socios($db = null, int $retraso = 2): array
                 if (!$delStmt) {
                     throw new RuntimeException('Error al intentar actualizar la tabla Socios.');
                 }
-                sp_depuro_check($db->execute($delStmt, [$idreg]),
-                    'Error al intentar actualizar la tabla Socios.');
+                sp_depuro_check(
+                    $db->execute($delStmt, [$idreg]),
+                    'Error al intentar actualizar la tabla Socios.'
+                );
 
                 $db->commit();
                 $db->autocommit(true);
@@ -187,7 +210,7 @@ function sp_depuro_socios($db = null, int $retraso = 2): array
                 // VFP: ante error mostraba el mensaje y hacia Cancel (corta el proceso).
                 throw new RuntimeException(
                     'NO SE REALIZA CORRECTAMENTE LA OPERACION. VERIFIQUE LA INFORMACION. ' .
-                    $e->getMessage(),
+                        $e->getMessage(),
                     0,
                     $e
                 );

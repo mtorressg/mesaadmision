@@ -43,9 +43,14 @@ $(function () {
         window.open(url, '_blank');
     });
 
-    // Carga inicial de operadores (VFP: sp_busco_usuarios 'MESAINGRESOS').
+    // Carga inicial: fecha del servidor (sp_busco_fecha_serv) en Desde/Hasta y
+    // operadores (VFP: sp_busco_usuarios 'MESAINGRESOS').
     $.getJSON('../Ajax/Mesa4Controller.php?action=index', function (res) {
         if (!res || !res.ok) { return; }
+        if (res.fecha) {
+            $('#fecDesde').val(res.fecha);
+            $('#fecHasta').val(res.fecha);
+        }
         $.each(res.operadores || [], function (i, op) {
             $('#cboUno').append($('<option>').val(op.id).text(op.texto));
         });
