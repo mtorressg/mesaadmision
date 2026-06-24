@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/xampp/htdocs/mesaadmision/scx && rm -f frmmesa1.txt frmmesa2.txt frmmesa4.txt && echo \"temp txt removed\" && ls /c/xampp/htdocs/mesaadmision/Php /c/xampp/htdocs/mesaadmision/App)",
+      "Bash(/c/xampp/php/php -r '$_REQUEST=[\"action\"=>\"guardar\"]; $_SERVER[\"SCRIPT_FILENAME\"]=\"App/Mesa3Controller.php\"; include \"App/Mesa3Controller.php\";')",
+      "Bash(/c/xampp/php/php -r '$_REQUEST=[\"action\"=>\"index\"]; $_SERVER[\"SCRIPT_FILENAME\"]=\"App/Mesa1Controller.php\"; include \"App/Mesa1Controller.php\";')",
+      "Bash(/c/xampp/php/php -r '$_REQUEST=[\"action\"=>\"cargarGrid\",\"page\"=>\"sala\"]; $_SERVER[\"SCRIPT_FILENAME\"]=\"App/Mesa2Controller.php\"; include \"App/Mesa2Controller.php\";')",
+      "Bash(/c/xampp/php/php -r '$_REQUEST=[\"action\"=>\"handle\"]; $_SERVER[\"SCRIPT_FILENAME\"]=\"App/Mesa4Controller.php\"; include \"App/Mesa4Controller.php\";')",
+      "Read(//c/xampp/htdocs//**)",
+      "Read(//c/xampp/htdocs/usuario//**)",
+      "Read(//c/xampp/htdocs/dbconexion//**)",
+      "Read(//c/xampp/**)",
+      "Bash(php -m)",
+      "Bash(php -r '$ds = function_exists\\(\"odbc_data_source\"\\); echo \"odbc_connect=\".\\(function_exists\\(\"odbc_connect\"\\)?\"yes\":\"no\"\\).\"\\\\n\";')",
+      "Bash(php -l mesaadmision/Php/sp_depuro_socios.php)",
+      "Bash(rm -f /tmp/test_cache.php /tmp/test_cache2.php /tmp/test_sql.php)",
+      "Bash(php -l mesaadmision/App/DepuracionController.php)",
+      "Bash(php -l mesaadmision/index.php)",
+      "Bash(php -l mesaadmision/Php/partials/auth.php)",
+      "Bash(php -r ' *)",
+      "Bash(cd /c/xampp/htdocs/usuario && find . -type f | sort)",
+      "Read(//c/c/xampp/htdocs/**)",
+      "Bash(php -l ajax/valid_login.php)",
+      "Bash(mv App/*.php Ajax/ && echo \"=== App ===\" && ls -A App && echo \"=== Ajax ===\" && ls Ajax)",
+      "Bash(php -d display_errors=1 -d error_reporting=E_ALL -r '$_REQUEST=[\"action\"=>\"index\"];$_SERVER[\"SCRIPT_FILENAME\"]=\"Ajax/Mesa1Controller.php\";include \"Ajax/Mesa1Controller.php\";')",
+      "Bash(php -r '$_REQUEST=[\"action\"=>\"index\"];$_SERVER[\"SCRIPT_FILENAME\"]=\"Ajax/Mesa1Controller.php\";include \"Ajax/Mesa1Controller.php\";')",
+      "Bash(php -r '$_REQUEST=[\"action\"=>\"cargarGrid\",\"page\"=>\"sala\",\"atendidos\"=>\"0\"];$_SERVER[\"SCRIPT_FILENAME\"]=\"Ajax/Mesa2Controller.php\";include \"Ajax/Mesa2Controller.php\";')"
+    ],
+    "additionalDirectories": [
+      "c:\\c\\xampp\\htdocs\\mesaadmision\\scx",
+      "c:\\xampp\\htdocs\\usuario",
+      "c:\\xampp\\htdocs\\dbconexion",
+      "C:\\xampp\\htdocs\\mesaadmision\\App"
+    ]
+  }
+}
