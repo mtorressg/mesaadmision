@@ -22,6 +22,7 @@
  */
 require_once __DIR__ . '/../../dbconexion/db.php';
 require_once __DIR__ . '/sp_busco_fecha_serv.php';
+require_once __DIR__ . '/partials/session.php';
 
 /**
  * @param string|null $mensajeError (por referencia) mensaje de error SQL, '' si no hubo.
@@ -97,7 +98,7 @@ function sp_actualizo_socio(
         }
         $midsocio = $mids;
 
-        $mnombre = $operadora !== null ? $operadora : ($_SESSION['idusuario'] ?? '');
+        $mnombre = $operadora !== null ? $operadora : mesa_session_user();
         if ($maten === null) {
             $maten = $mnombre; // sys(0) (puesto de trabajo) no tiene equivalente web directo
         }

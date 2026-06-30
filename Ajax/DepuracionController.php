@@ -19,11 +19,10 @@ class DepuracionController extends BaseController
 {
     public function __construct()
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        // Sesion del lanzador clasico (nombre dinamico $lses).
+        mesa_session_start();
         // Para un endpoint JSON no redirigimos: devolvemos 401.
-        if (empty($_SESSION['idusuario'])) {
+        if (mesa_session_user() === '') {
             $this->json(['ok' => false, 'msg' => 'Sesion no iniciada.'], 401);
         }
     }

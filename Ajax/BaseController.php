@@ -10,6 +10,8 @@
  * controladores. La logica de negocio (conexion a SQL Server, stored
  * procedures sp_*, etc.) NO esta implementada: cada accion queda como stub.
  */
+require_once __DIR__ . '/../Php/partials/session.php';
+
 abstract class BaseController
 {
     /**
@@ -18,9 +20,9 @@ abstract class BaseController
      */
     public function handle(): void
     {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        // Inicia la sesion del lanzador clasico (nombre dinamico $lses,
+        // resuelto de ?lses= o de la cookie mi_lses que dejo auth.php).
+        mesa_session_start();
 
         $action = $_REQUEST['action'] ?? 'index';
 
@@ -36,7 +38,7 @@ abstract class BaseController
     /** idusuario del usuario logueado (operadora), o '' si no hay sesion. */
     protected function usuario(): string
     {
-        return (string) ($_SESSION['idusuario'] ?? '');
+        return mesa_session_user();
     }
 
     /** Devuelve una respuesta JSON y corta la ejecucion. */
